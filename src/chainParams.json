@@ -1,0 +1,36 @@
+{
+    "0x13881": [
+        {
+            "chainId": "0x13881",
+            "rpcUrls": [
+                "https://rpc-mumbai.maticvigil.com/"
+            ],
+            "chainName": "Polygon Mumbai testnet",
+            "nativeCurrency": {
+                "name": "MATIC",
+                "symbol": "MATIC",
+                "decimals": 18
+            },
+            "blockExplorerUrls": [
+                "https://mumbai.polygonscan.com"
+            ]
+        }
+    ],
+    "0x89": [
+        {
+            "chainId": "0x89",
+            "rpcUrls": [
+                "https://polygon-rpc.com/"
+            ],
+            "chainName": "Polygon Mainnet",
+            "nativeCurrency": {
+                "name": "MATIC",
+                "symbol": "MATIC",
+                "decimals": 18
+            },
+            "blockExplorerUrls": [
+                "https://polygonscan.com"
+            ]
+        }
+    ]
+}
