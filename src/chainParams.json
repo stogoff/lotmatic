@@ -3,7 +3,7 @@
         {
             "chainId": "0x13881",
             "rpcUrls": [
-                "https://rpc-mumbai.maticvigil.com/"
+                "https://matic-mumbai.chainstacklabs.com/"
             ],
             "chainName": "Polygon Mumbai testnet",
             "nativeCurrency": {
