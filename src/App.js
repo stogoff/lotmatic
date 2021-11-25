@@ -139,7 +139,7 @@ function App() {
       await txn.wait();
       setTick(Date.now());
 
-      showMessage("Lottery has been started!");
+      showMessage("Lottery has been stopped!");
     } catch (ex) {
       console.log(ex);
       try {
@@ -247,7 +247,9 @@ function App() {
               <Card elevation={12}>
                 <CardContent>
                   <Typography>Lottery:</Typography>
-                  <Typography>{lotParams.lotteryState} </Typography>
+                  <Typography variant="button" color="green">
+                    {lotParams.lotteryState}{" "}
+                  </Typography>
                 </CardContent>
               </Card>
             </Grid>
@@ -343,6 +345,14 @@ function App() {
                 <Grid item xs={4} />
               </>
             )}
+
+            <Grid item xs={20}>
+              <Box
+                sx={{
+                  height: 100,
+                }}
+              />
+            </Grid>
           </Grid>
         </div>
       );
