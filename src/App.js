@@ -5,8 +5,12 @@ import LoadingIndicator from "./Components/LoadingIndicator";
 import { CONTRACT_ADDRESS, CHAIN_ID } from "./constants";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import MaterialUISwitch from "./MUISwitch";
+
 import {
   AppBar,
+  FormGroup,
+  FormControlLabel,
   Box,
   Toolbar,
   IconButton,
@@ -28,6 +32,7 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 function App() {
+  const [dark, setDark]= useState(false);
   const [provider, setProvider] = useState(null);
   const [currentAccount, setCurrentAccount] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -47,12 +52,17 @@ function App() {
     minMatic: null,
   });
 
+  const mode = dark ? "dark" : "light";
   const myTheme = createTheme({
     //spacing: 8,
     palette: {
-      mode: "light",
+      mode: mode,
     },
   });
+
+  function handleChangeTheme(){
+    setDark(!dark);
+  }
   async function showMessage(msg) {
     setMessage(msg);
     setSnackbarOpen(true);
@@ -160,7 +170,7 @@ function App() {
       const { ethereum } = window;
 
       if (!ethereum) {
-        alert("Get MetaMask!");
+        alert("Please install MetaMask!");
         return;
       }
 
@@ -200,19 +210,21 @@ function App() {
     }
     if (!currentAccount) {
       return (
-        <Card elevation={12}>
-          <CardMedia component="img" image="polygon-matic.gif"></CardMedia>
-          <CardContent>
-            <Typography>
-              Our lottery uses Polygon Blockhain and MATIC token
-            </Typography>
-          </CardContent>
-          <CardActions>
-            <Button onClick={connectWallet}>
-              Connect Wallet To Get Started
-            </Button>
-          </CardActions>
-        </Card>
+        <Box m="auto" sx={{ maxWidth: "sm" }}>
+          <Card elevation={12}>
+            <CardMedia component="img" image="polygon-matic.gif"></CardMedia>
+            <CardContent>
+              <Typography>
+                Our lottery uses Polygon Blockhain and MATIC token
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button onClick={connectWallet} variant="contained">
+                Connect Wallet To Get Started
+              </Button>
+            </CardActions>
+          </Card>
+        </Box>
       );
     } else {
       isManager();
@@ -411,13 +423,13 @@ function App() {
 
                 //switchError.code === 4902
                 try {
-                  //alert("Trying to add network");
+                  console.log("Trying to add network");
                   await ethereum.request({
                     method: "wallet_addEthereumChain",
                     params: chainParams[CHAIN_ID],
                   });
                 } catch (addError) {
-                  //alert("Network add error");
+                  console.log("Network add error");
                 }
 
                 setIsLoading(false);
@@ -443,12 +455,12 @@ function App() {
               setIsLoading(false);
               return 1;
             } else {
-              alert("No authorized account found");
+              console.log("No authorized account found");
               setIsLoading(false);
               return 0;
             }
           } else {
-            alert("We have another wallet. Get Metamask");
+            console.log("We have another wallet. Get Metamask");
             setIsLoading(false);
             return -1; // have another wallet
           }
@@ -535,57 +547,53 @@ function App() {
   return (
     // Wrapping code in ThemeProvider
     <ThemeProvider theme={myTheme}>
-      <Paper sx={{}}>
+      <Paper sx={{ textAlign: "center" }}>
         <AppBar position="static" color="primary">
           <Toolbar>
-            <IconButton
-              edge="start"
-              sx={{ mr: 2 }}
-              color="inherit"
-              aria-label="menu"
-            >
-              <MenuIcon />
-            </IconButton>
+            <FormGroup>
+              <FormControlLabel
+                control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked />}
+                label=""
+                checked={dark}
+                onChange={handleChangeTheme}
+                inputProps={{ "aria-label": "controlled" }}
+              />
+            </FormGroup>
             <Typography variant="h6" color="inherit" component="div">
               LotMatic v.{process.env.REACT_APP_VERSION}
             </Typography>
           </Toolbar>
         </AppBar>
-        <Box>
-          <div className="App">
-            <div className="container">
-              <div className="header-container">
-                <Typography variant="subtitle2" gutterBottom component="div">
-                  This lottery gets random numbers from the Chainlink
-                  decentralized Oracle. You can check results on the Polygon
-                  blockchain.
-                </Typography>
-                {/* This is where our button and image code used to be!
-                 *	Remember we moved it into the render method.
-                 */}
-                {renderContent()}
-              </div>
-              <div className="footer-container">
-                <Snackbar
-                  open={snackbarOpen}
-                  autoHideDuration={1000}
-                  message={message}
-                  sx={{ bottom: { xs: 90, sm: 0 } }}
-                  action={
-                    <React.Fragment>
-                      <IconButton
-                        aria-label="close"
-                        color="inherit"
-                        sx={{ p: 0.5 }}
-                        onClick={closeSnackbar}
-                      >
-                        <CloseIcon />
-                      </IconButton>
-                    </React.Fragment>
-                  }
-                />
-              </div>
-            </div>
+        <Box m="auto" sx={{ maxWidth: "md" }}>
+          <div className="header-container">
+            <Typography variant="subtitle2" gutterBottom component="div">
+              This lottery gets random numbers from the Chainlink decentralized
+              Oracle. You can check results on the Polygon blockchain.
+            </Typography>
+            {/* This is where our button and image code used to be!
+             *	Remember we moved it into the render method.
+             */}
+            {renderContent()}
+          </div>
+          <div className="footer-container">
+            <Snackbar
+              open={snackbarOpen}
+              autoHideDuration={1000}
+              message={message}
+              sx={{ bottom: { xs: 90, sm: 0 } }}
+              action={
+                <React.Fragment>
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    sx={{ p: 0.5 }}
+                    onClick={closeSnackbar}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </React.Fragment>
+              }
+            />
           </div>
         </Box>
       </Paper>

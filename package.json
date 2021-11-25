@@ -1,6 +1,7 @@
 {
   "name": "lotmatic2",
-  "version": "0.2.6",
+  "version": "0.2.7",
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.6.0",
