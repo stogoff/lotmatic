@@ -3,7 +3,6 @@ import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import LoadingIndicator from "./Components/LoadingIndicator";
 import { CONTRACT_ADDRESS, CHAIN_ID } from "./constants";
-import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import MaterialUISwitch from "./MUISwitch";
 
@@ -23,7 +22,6 @@ import {
   Card,
   CardContent,
   CardMedia,
-  CardActions,
   Typography,
   Snackbar,
   Paper,
@@ -32,7 +30,7 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 function App() {
-  const [dark, setDark]= useState(false);
+  const [dark, setDark] = useState(false);
   const [provider, setProvider] = useState(null);
   const [currentAccount, setCurrentAccount] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +40,7 @@ function App() {
   const [message, setMessage] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(null);
   const [tick, setTick] = useState(0);
+
   const [lotParams, setLotParams] = useState({
     lotteryState: null,
     manager: null,
@@ -60,7 +59,7 @@ function App() {
     },
   });
 
-  function handleChangeTheme(){
+  function handleChangeTheme() {
     setDark(!dark);
   }
   async function showMessage(msg) {
@@ -82,6 +81,8 @@ function App() {
       return;
     }
     setSnackbarOpen(false);
+    //alert(document.body.clientHeight);
+    //alert(document.body.clientWidth);
   }
 
   async function enter(event) {
@@ -183,7 +184,7 @@ function App() {
       const currentChainId = await ethereum.request({
         method: "eth_chainId",
       });
-      if (currentChainId != CHAIN_ID) {
+      if (currentChainId !== CHAIN_ID) {
         alert("approve Metamask to switch network!");
         setCurrentAccount(null);
         return;
@@ -214,15 +215,14 @@ function App() {
           <Card elevation={12}>
             <CardMedia component="img" image="polygon-matic.gif"></CardMedia>
             <CardContent>
-              <Typography>
+              <Typography variant="h6">
                 Our lottery uses Polygon Blockhain and MATIC token
               </Typography>
-            </CardContent>
-            <CardActions>
+
               <Button onClick={connectWallet} variant="contained">
                 Connect Wallet To Get Started
               </Button>
-            </CardActions>
+            </CardContent>
           </Card>
         </Box>
       );
@@ -235,21 +235,12 @@ function App() {
             <Grid item xs={18}>
               <Card elevation={12}>
                 <CardContent>
-                  <Typography
-                    sx={{ fontSize: 14 }}
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    Contract address:
+                  <Typography variant="subtitle2">Contract address:</Typography>
+                  <Typography variant="caption">
+                    <Link target="_blank" href={explorer + CONTRACT_ADDRESS}>
+                      {CONTRACT_ADDRESS}
+                    </Link>
                   </Typography>
-                  <Link
-                    sx={{ fontSize: 14 }}
-                    target="_blank"
-                    rel="noreferrer"
-                    href={explorer}
-                  >
-                    {CONTRACT_ADDRESS}
-                  </Link>
                 </CardContent>
               </Card>
             </Grid>
@@ -257,28 +248,71 @@ function App() {
             <Grid item xs={1} />
             <Grid item xs={6}>
               <Card elevation={12}>
-                <CardContent>
-                  <Typography>Lottery:</Typography>
-                  <Typography variant="button" color="green">
-                    {lotParams.lotteryState}{" "}
-                  </Typography>
-                </CardContent>
+                <Grid
+                  container
+                  spacing={0}
+                  direction="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  style={{ minHeight: "16vh" }}
+                >
+                  <Grid item>
+                    <Typography variant="subtitle2">Lottery:</Typography>
+                    {lotParams.lotteryState === "CALCULATING WINNER" && (
+                      <Typography variant="caption" color="orange">
+                        {lotParams.lotteryState}{" "}
+                      </Typography>
+                    )}
+
+                    {lotParams.lotteryState === "OPEN" && (
+                      <Typography variant="h6" color="green">
+                        {lotParams.lotteryState}{" "}
+                      </Typography>
+                    )}
+                    {lotParams.lotteryState === "CLOSED" && (
+                      <Typography variant="h6" color="red">
+                        {lotParams.lotteryState}
+                      </Typography>
+                    )}
+                  </Grid>
+                </Grid>
               </Card>
             </Grid>
             <Grid item xs={6}>
               <Card elevation={12}>
-                <CardContent>
-                  <Typography>Lottery pool: </Typography>
-                  <Typography>{lotParams.poolSize} MATIC</Typography>
-                </CardContent>
+                <Grid
+                  container
+                  spacing={0}
+                  direction="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  style={{ minHeight: "16vh" }}
+                >
+                  <Grid item>
+                    <Typography variant="subtitle2">Pool: </Typography>
+                    <Typography variant="h6">
+                      {lotParams.poolSize}
+                      <Typography variant="caption"> MATIC</Typography>
+                    </Typography>
+                  </Grid>
+                </Grid>
               </Card>
             </Grid>
             <Grid item xs={6}>
               <Card elevation={12}>
-                <CardContent>
-                  <Typography>Players:</Typography>
-                  <Typography> {lotParams.numPlayers}</Typography>
-                </CardContent>
+                <Grid
+                  container
+                  spacing={0}
+                  direction="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  style={{ minHeight: "16vh" }}
+                >
+                  <Grid item>
+                    <Typography variant="subtitle2">Players:</Typography>
+                    <Typography variant="h6">{lotParams.numPlayers}</Typography>
+                  </Grid>
+                </Grid>
               </Card>
             </Grid>
             <Grid item xs={1} />
@@ -288,7 +322,19 @@ function App() {
                 <Grid item xs={18}>
                   <Card elevation={12}>
                     <CardContent>
-                      Recent winner is: {lotParams.recentWinner}
+                      <Typography variant="subtitle2">
+                        Recent winner is:
+                      </Typography>
+                      <Typography variant="caption">
+                        <Link
+                          target="_blank"
+                          href={
+                            explorer + lotParams.recentWinner + "#internaltx"
+                          }
+                        >
+                          {lotParams.recentWinner}
+                        </Link>
+                      </Typography>
                     </CardContent>
                   </Card>
                 </Grid>
@@ -383,6 +429,7 @@ function App() {
   });
 
   useEffect(() => {
+    // checkWalletConnection is here
     async function checkWalletConnection() {
       /*
         returns:
@@ -448,9 +495,7 @@ function App() {
               console.log("Found an authorized account:", account);
               setCurrentAccount(account);
               setExplorer(
-                chainParams[CHAIN_ID][0]["blockExplorerUrls"] +
-                  "/address/" +
-                  CONTRACT_ADDRESS
+                chainParams[CHAIN_ID][0]["blockExplorerUrls"] + "/address/"
               );
               setIsLoading(false);
               return 1;
@@ -475,6 +520,7 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // get currentAccount is here
     /*
      * The function we will call that interacts with out smart contract
      */
@@ -500,6 +546,7 @@ function App() {
   }, [currentAccount]);
 
   useEffect(() => {
+    // fetchContractData
     async function fetchContractData() {
       const contract = lotteryContract;
       let s = await contract.lotteryState();
@@ -547,16 +594,15 @@ function App() {
   return (
     // Wrapping code in ThemeProvider
     <ThemeProvider theme={myTheme}>
-      <Paper sx={{ textAlign: "center" }}>
+      <Paper sx={{ textAlign: "center", height: "100vh" }}>
         <AppBar position="static" color="primary">
           <Toolbar>
             <FormGroup>
               <FormControlLabel
-                control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked />}
+                control={<MaterialUISwitch sx={{ m: 1 }} />}
                 label=""
                 checked={dark}
                 onChange={handleChangeTheme}
-                inputProps={{ "aria-label": "controlled" }}
               />
             </FormGroup>
             <Typography variant="h6" color="inherit" component="div">
@@ -566,9 +612,13 @@ function App() {
         </AppBar>
         <Box m="auto" sx={{ maxWidth: "md" }}>
           <div className="header-container">
-            <Typography variant="subtitle2" gutterBottom component="div">
-              This lottery gets random numbers from the Chainlink decentralized
-              Oracle. You can check results on the Polygon blockchain.
+            <Typography variant="caption" gutterBottom component="div">
+              This decentralized lottery app gets random numbers from the&nbsp;
+              <Link target="_blank" href="https://chain.link/">
+                Chainlink Oracle
+              </Link>
+              . You can check results on the Polygon blockchain. The contract
+              collects a fixed 3% fee.
             </Typography>
             {/* This is where our button and image code used to be!
              *	Remember we moved it into the render method.
