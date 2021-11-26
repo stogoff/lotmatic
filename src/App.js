@@ -62,6 +62,15 @@ function App() {
   function handleChangeTheme() {
     setDark(!dark);
   }
+
+  function refreshPage() {
+    window.parent.location = window.parent.location.href;
+  }
+
+  async function sleep(milliseconds) {
+    return new Promise((resolve) => setTimeout(resolve, milliseconds));
+  }
+
   async function showMessage(msg) {
     setMessage(msg);
     setSnackbarOpen(true);
@@ -96,6 +105,7 @@ function App() {
         value: ethers.utils.parseEther(amount.toString()),
       });
       await txn.wait();
+      await sleep(1000);
       setTick(Date.now());
 
       showMessage("You have been entered!");
@@ -122,6 +132,7 @@ function App() {
         from: currentAccount,
       });
       await txn.wait();
+      await sleep(3000);
       setTick(Date.now());
 
       showMessage("Lottery has been started!");
@@ -148,6 +159,7 @@ function App() {
         from: currentAccount,
       });
       await txn.wait();
+      await sleep(3000);
       setTick(Date.now());
 
       showMessage("Lottery has been stopped!");
@@ -193,7 +205,7 @@ function App() {
       /*
        * Boom! This should print out public address once we authorize Metamask.
        */
-      console.log("Connected", accounts[0], currentChainId);
+      //console.log("Connected", accounts[0], currentChainId);
       setCurrentAccount(accounts[0]);
     } catch (error) {
       console.log(error);
@@ -378,6 +390,15 @@ function App() {
                 <Grid item xs={1} md={4} />
               </>
             )}
+            <Grid item xs={4} />
+            <Grid item xs={12}>
+              <Box>
+                <Button variant="contained" onClick={refreshPage}>
+                  Refresh
+                </Button>
+              </Box>
+            </Grid>
+            <Grid item xs={4} />
 
             {isManager() && (
               <>
@@ -451,26 +472,26 @@ function App() {
           return -2; // don't have a wallet
         } else {
           if (ethereum.isMetaMask) {
-            console.log("We have the Metamask object");
+            //console.log("We have the Metamask object");
             const currentChainId = await ethereum.request({
               method: "eth_chainId",
             });
-            console.log("chain:", currentChainId);
+            //console.log("chain:", currentChainId);
             if (currentChainId !== CHAIN_ID) {
               try {
-                console.log("Before switching:", currentChainId);
+                //console.log("Before switching:", currentChainId);
                 await ethereum.request({
                   method: "wallet_switchEthereumChain",
                   params: [{ chainId: CHAIN_ID }],
                 });
-                console.log("Chain was switched");
+                //console.log("Chain was switched");
               } catch (switchError) {
                 console.log("switch error #", switchError.code);
                 // This error code indicates that the chain has not been added to MetaMask.
 
                 //switchError.code === 4902
                 try {
-                  console.log("Trying to add network");
+                  //console.log("Trying to add network");
                   await ethereum.request({
                     method: "wallet_addEthereumChain",
                     params: chainParams[CHAIN_ID],
@@ -492,7 +513,7 @@ function App() {
 
             if (accounts.length !== 0) {
               const account = accounts[0];
-              console.log("Found an authorized account:", account);
+              //console.log("Found an authorized account:", account);
               setCurrentAccount(account);
               setExplorer(
                 chainParams[CHAIN_ID][0]["blockExplorerUrls"] + "/address/"
@@ -500,12 +521,12 @@ function App() {
               setIsLoading(false);
               return 1;
             } else {
-              console.log("No authorized account found");
+              //console.log("No authorized account found");
               setIsLoading(false);
               return 0;
             }
           } else {
-            console.log("We have another wallet. Get Metamask");
+            //console.log("We have another wallet. Get Metamask");
             setIsLoading(false);
             return -1; // have another wallet
           }
@@ -526,7 +547,7 @@ function App() {
      */
     const abi = require("./abi.json");
     async function getContract() {
-      console.log("Checking for contract ");
+      //console.log("Checking for contract ");
 
       const prov = new ethers.providers.Web3Provider(window.ethereum);
       setProvider(prov);
@@ -540,7 +561,7 @@ function App() {
      * We only want to run this, if we have a connected wallet
      */
     if (currentAccount) {
-      console.log("CurrentAccount:", currentAccount);
+      //console.log("CurrentAccount:", currentAccount);
       getContract();
     }
   }, [currentAccount]);
@@ -561,13 +582,13 @@ function App() {
           s = "CALCULATING WINNER";
           break;
         default:
-          console.log("Sorry, " + s + " is undef");
+          s = "???";
       }
       let m = await contract.owner();
       var p;
       try {
         p = await contract.getPlayers();
-        console.log("players:", p.length);
+        //console.log("players:", p.length);
       } catch (ex) {
         p = [];
       }

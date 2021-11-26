@@ -5,3 +5,4 @@ __pycache__
 .hypothesis/
 build/
 reports/
+tmp_for_verification/

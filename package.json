@@ -1,6 +1,6 @@
 {
-  "name": "lotmatic2",
-  "version": "0.2.8",
+  "name": "lotmatic",
+  "version": "0.3.0",
   "license": "MIT",
   "private": true,
   "dependencies": {
